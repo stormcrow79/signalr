@@ -20,5 +20,14 @@
                 .Select(i => Guid.NewGuid().ToString())
                 .ToArray();
         }
+
+        public async void LongRequestWithCallback()
+        {
+            _logger.LogDebug($"LongRequestWithCallback");
+         
+            await Task.Delay(TimeSpan.FromSeconds(15));
+
+            await Clients.Caller.SendAsync("Callback");
+        }
     }
 }

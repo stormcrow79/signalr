@@ -17,21 +17,19 @@ namespace ConsoleApp1
             Console.WriteLine("Press enter to connect ...");
             Console.ReadLine();
 
+            connection.On("Callback", () => Console.WriteLine("LongRequest called back"));
+
             await connection.StartAsync();
 
-            //connection.On<string>("ReceiveMessage", (message) =>
-            //    this.Dispatcher.Invoke(() => ResponseLabel.Content = $"response from server after {(DateTime.Now - theTime).TotalMilliseconds:F0} s: {message}");
-
-            var requestCount = 3;
-            var request = new
-            {
-                RequestId = Guid.NewGuid(),
-                Count = requestCount
-            };
-
-            var result = await connection.InvokeAsync<string[]>("GetSampleValues", requestCount);
+            var result = await connection.InvokeAsync<string[]>(
+                "GetSampleValues", 3);
             foreach (var item in result)
                 Console.WriteLine(item);
+
+            Console.ReadLine();
+
+            await connection.SendAsync("LongRequestWithCallback");
+            Console.WriteLine("LongRequest sent ...");
 
             Console.ReadLine();
 
